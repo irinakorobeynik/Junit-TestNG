@@ -6,8 +6,6 @@ import shop.VirtualItem;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CartTests extends BaseTest{
-
-
     private Cart testCart;
     private RealItem testRealItem;
     private VirtualItem testVirtualItem;
