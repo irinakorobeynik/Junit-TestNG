@@ -1,9 +1,13 @@
-import org.junit.jupiter.api.*;
+
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 import shop.Cart;
 import shop.RealItem;
 import shop.VirtualItem;
 
-import static org.junit.jupiter.api.Assertions.*;
+
 
 public class CartTests extends BaseTest {
 
@@ -12,8 +16,8 @@ public class CartTests extends BaseTest {
     private static final VirtualItem testVirtualItem = new VirtualItem();
     private static final double totalBeforeAddingItem = testCart.getTotalPrice();
 
-    @BeforeAll
-    public static void initAll() {
+    @BeforeTest
+    public void initAll() {
         populateItem(testVirtualItem);
         populateItem(testRealItem);
     }
@@ -21,24 +25,23 @@ public class CartTests extends BaseTest {
     @Test
     public void testAddingVirtualItem() {
         testCart.addVirtualItem(testVirtualItem);
-        assertAll("Test Adding VirtualItem via Total",
-                () -> assertTrue(testCart.getTotalPrice() != 0, "Seems like  Virtual Item is not added, Total equals to 0."),
-                () -> assertNotEquals(totalBeforeAddingItem, testCart.getTotalPrice(), "Seems like  Virtual Item is not added, " +
-                        "total values wasn't changed"),
-                () -> assertEquals(testCart.getTotalPrice(), getTotalPricePerItem(testVirtualItem), "Total is calculated wrong")
-        );
+        SoftAssert asert = new SoftAssert();
+        asert.assertTrue(testCart.getTotalPrice() != 0, "Seems like  Virtual Item is not added, Total equals to 0.");
+        asert.assertNotEquals(totalBeforeAddingItem, testCart.getTotalPrice(), "Seems like  Virtual Item is not added total values wasn't changed");
+        asert.assertEquals(testCart.getTotalPrice(), getTotalPricePerItem(testVirtualItem) + getTotalPricePerItem(testRealItem), "Total is calculated wrong");
+        asert.assertAll();
+
     }
 
     @Test
     public void testAddingRealItem() {
         testCart.addRealItem(testRealItem);
-        assertAll("Test Adding RealItem via Total",
-                () -> assertTrue(testCart.getTotalPrice() != 0, "Seems like  Real Item is not added, Total equals to 0."),
-                () -> assertNotEquals(totalBeforeAddingItem, testCart.getTotalPrice(), "Seems like  Real Item is not added, " +
-                        "total values wasn't changed"),
-                () -> assertEquals(testCart.getTotalPrice(), getTotalPricePerItem(testRealItem) + getTotalPricePerItem(testVirtualItem),
-                        "Total is calculated wrong")
-        );
+        SoftAssert asert = new SoftAssert();
+        asert.assertTrue(testCart.getTotalPrice() != 0, "Seems like  Virtual Item is not added, Total equals to 0.");
+        asert.assertNotEquals(totalBeforeAddingItem, testCart.getTotalPrice(), "Seems like  Virtual Item is not added total values wasn't changed");
+        asert.assertEquals(testCart.getTotalPrice(), getTotalPricePerItem(testRealItem), "Total is calculated wrong");
+        asert.assertAll();
+
     }
 
 

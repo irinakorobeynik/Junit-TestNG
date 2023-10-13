@@ -1,3 +1,5 @@
+import org.testng.ITestContext;
+import org.testng.annotations.DataProvider;
 import shop.Item;
 import org.apache.commons.lang3.RandomStringUtils;
 import shop.RealItem;
@@ -41,6 +43,16 @@ public abstract class  BaseTest {
 
     public String getPath(String fileName){
         return "src/main/resources/" + fileName + ".json";
+    }
+
+    @DataProvider(name = "fileDataProvider")
+    public static Object[][] fileDataProvider() {
+        return new Object[][]{
+                {NON_EXISTING_FILE_NAME_1},
+                {NON_EXISTING_FILE_NAME_2},
+                {NON_EXISTING_FILE_NAME_3},
+                {NON_EXISTING_FILE_NAME_4},
+                {NON_EXISTING_FILE_NAME_5}};
     }
 
 }

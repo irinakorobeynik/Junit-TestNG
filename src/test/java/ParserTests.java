@@ -1,6 +1,7 @@
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.testng.Assert;
+import org.testng.ITestContext;
+import org.testng.annotations.*;
+import org.testng.asserts.SoftAssert;
 import parser.JsonParser;
 import parser.NoSuchFileException;
 import parser.Parser;
@@ -9,30 +10,28 @@ import shop.RealItem;
 
 import java.io.File;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ParserTests extends BaseTest {
-    private static final Parser parser= new JsonParser();
+    private static final Parser parser = new JsonParser();
     private static final RealItem testRealItem = new RealItem();
     private static Cart testCart;
     private static File file;
 
-    @BeforeEach
+    @BeforeTest
     public void init() {
         testCart = new Cart(getRandomString());
         populateItem(testRealItem);
         testCart.addRealItem(testRealItem);
     }
 
-    @Disabled
-    @ParameterizedTest
-    @ValueSource(strings = {NON_EXISTING_FILE_NAME_4, NON_EXISTING_FILE_NAME_2, NON_EXISTING_FILE_NAME_3, NON_EXISTING_FILE_NAME_5,
-            NON_EXISTING_FILE_NAME_1})
-    public void testNoSuchFileException(String argument) {
-        file = new File(getPath(argument));
-        NoSuchFileException thrown = assertThrows(NoSuchFileException.class, () ->
-                testCart = parser.readFromFile(file));
-        assertTrue(thrown.getMessage().contains(String.format("File %s.json not found!", file)), "Exception doesn't contain such text");
+
+
+
+    @Test(dataProvider = "fileDataProvider", dataProviderClass = BaseTest.class, expectedExceptions =NoSuchFileException.class,
+            expectedExceptionsMessageRegExp ="(?s).*json not found!.*" )
+    public void testNoSuchFileException(String fileName) {
+        file = new File(getPath(fileName));
+       testCart = parser.readFromFile(file);
     }
 
 
@@ -40,27 +39,21 @@ public class ParserTests extends BaseTest {
     public void testWritingAndReadingJson() {
         parser.writeToFile(testCart);
         file = new File(getPath(testCart.getCartName()));
-        assertAll("Writing/Reading file test",
-                () -> {
-                    assertAll("Writing test",
-                            () -> assertTrue(file.exists(), "File doesn't exists"),
-                            () -> assertTrue(file.length() > 0, "File has no content")
-                    );
-                },
-                () -> {
-                    Cart newTestCart = parser.readFromFile(file);
-                    assertAll("Reading test",
-                            () -> assertEquals(newTestCart.getCartName(), testCart.getCartName(), "Cart name doesn't match"),
-                            () -> assertEquals(newTestCart.getTotalPrice(), getTotalPricePerItem(testRealItem), "Total is different for two Carts")
-                    );
-                }
-        );
+        SoftAssert asert = new SoftAssert();
+        asert.assertTrue(file.exists(), "File doesn't exists");
+        asert.assertTrue(file.length() > 0, "File has no content");
+
+        Cart newTestCart = parser.readFromFile(file);
+
+        asert.assertEquals(newTestCart.getCartName(), testCart.getCartName(), "Cart name doesn't match");
+        asert.assertEquals(newTestCart.getTotalPrice(), getTotalPricePerItem(testRealItem), "Total is different for two Carts");
     }
 
-    @AfterEach
+    @AfterTest
     public void deleteFile() {
         file.deleteOnExit();
     }
+
 
 }
 
