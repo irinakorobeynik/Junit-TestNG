@@ -12,16 +12,14 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ParserTests extends BaseTest {
-    private Parser parser;
-    private Cart testCart;
-    private RealItem testRealItem;
+    private static final Parser parser= new JsonParser();
+    private static final RealItem testRealItem = new RealItem();
+    private static Cart testCart;
     private static File file;
 
     @BeforeEach
     public void init() {
-        parser = new JsonParser();
         testCart = new Cart(getRandomString());
-        testRealItem = new RealItem();
         populateItem(testRealItem);
         testCart.addRealItem(testRealItem);
     }
@@ -34,7 +32,7 @@ public class ParserTests extends BaseTest {
         file = new File(getPath(argument));
         NoSuchFileException thrown = assertThrows(NoSuchFileException.class, () ->
                 testCart = parser.readFromFile(file));
-        assertTrue(thrown.getMessage().contains(String.format("File %s.json not found!", file)));
+        assertTrue(thrown.getMessage().contains(String.format("File %s.json not found!", file)), "Exception doesn't contain such text");
     }
 
 
@@ -45,15 +43,15 @@ public class ParserTests extends BaseTest {
         assertAll("Writing/Reading file test",
                 () -> {
                     assertAll("Writing test",
-                            () -> assertTrue(file.exists()),
-                            () -> assertTrue(file.length() > 0)
+                            () -> assertTrue(file.exists(), "File doesn't exists"),
+                            () -> assertTrue(file.length() > 0, "File has no content")
                     );
                 },
                 () -> {
                     Cart newTestCart = parser.readFromFile(file);
                     assertAll("Reading test",
-                            () -> assertEquals(newTestCart.getCartName(), testCart.getCartName()),
-                            () -> assertEquals(newTestCart.getTotalPrice(), getTotalPricePerItem(testRealItem))
+                            () -> assertEquals(newTestCart.getCartName(), testCart.getCartName(), "Cart name doesn't match"),
+                            () -> assertEquals(newTestCart.getTotalPrice(), getTotalPricePerItem(testRealItem), "Total is different for two Carts")
                     );
                 }
         );

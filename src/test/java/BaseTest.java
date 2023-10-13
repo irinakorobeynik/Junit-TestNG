@@ -15,7 +15,7 @@ public abstract class  BaseTest {
     public static final String  NON_EXISTING_FILE_NAME_5 ="none";
 
     public double getTotalPricePerItem (Item item){
-        return item.getPrice()+ item.getPrice()*TAX;
+        return item.getPrice()+item.getPrice()*TAX;
     }
 
     public static double getRandomDouble(){
@@ -27,13 +27,13 @@ public abstract class  BaseTest {
 
     }
 
-    public void populateItem(VirtualItem item){
+    public static void populateItem(VirtualItem item){
         item.setName(getRandomString());
         item.setPrice(getRandomDouble());
         item.setSizeOnDisk(getRandomDouble());
     }
 
-    public void populateItem(RealItem item){
+    public static void populateItem(RealItem item){
         item.setName(getRandomString());
         item.setPrice(getRandomDouble());
         item.setWeight(getRandomDouble());
