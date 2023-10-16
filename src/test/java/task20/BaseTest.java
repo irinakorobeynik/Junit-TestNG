@@ -1,9 +1,13 @@
+package task20;
+
 import org.testng.ITestContext;
 import org.testng.annotations.DataProvider;
 import shop.Item;
 import org.apache.commons.lang3.RandomStringUtils;
 import shop.RealItem;
 import shop.VirtualItem;
+
+import java.util.regex.Pattern;
 
 public abstract class  BaseTest {
     public static final double TAX = 0.2;

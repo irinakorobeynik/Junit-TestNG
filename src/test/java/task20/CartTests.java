@@ -1,5 +1,5 @@
+package task20;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
@@ -16,13 +16,13 @@ public class CartTests extends BaseTest {
     private static final VirtualItem testVirtualItem = new VirtualItem();
     private static final double totalBeforeAddingItem = testCart.getTotalPrice();
 
-    @BeforeTest
+    @BeforeTest(groups = {"regression","smoke"})
     public void initAll() {
         populateItem(testVirtualItem);
         populateItem(testRealItem);
     }
 
-    @Test
+    @Test(groups = {"regression", "smoke"})
     public void testAddingVirtualItem() {
         testCart.addVirtualItem(testVirtualItem);
         SoftAssert asert = new SoftAssert();
@@ -33,7 +33,7 @@ public class CartTests extends BaseTest {
 
     }
 
-    @Test
+    @Test(groups = {"regression", "smoke"})
     public void testAddingRealItem() {
         testCart.addRealItem(testRealItem);
         SoftAssert asert = new SoftAssert();
